@@ -1,0 +1,25 @@
+{
+  "name": "gift-box",
+  "version": "0.0.0",
+  "description": "gift-box --------",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/limijiaoyin/gift-box.git"
+  },
+  "author": "Jarvys <yuhan534@126.com> (https://jarvys.github.io/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/limijiaoyin/gift-box/issues"
+  },
+  "homepage": "https://github.com/limijiaoyin/gift-box",
+  "dependencies": {
+    "body-parser": "^1.9.2",
+    "express": "^4.10.2",
+    "mongoose": "^3.8.19",
+    "morgan": "^1.5.0"
+  }
+}
