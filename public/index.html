@@ -216,7 +216,7 @@
                     dataType :"json",
                     success:function(data, status, xhr){
                         var code=Number(data.code);
-                        if(code==0){
+                        if(code==0){                            
                             loadGift();
                         }else{
                             window.console&& window.console.log("code:"+code);
@@ -231,36 +231,35 @@
         });
         function loadGift(){
             var phone=$(".js-tel").val();
+            var _data=$("#js-form").serialize();
+            lineLink+="?phone="+phone;
+            _data=_data.replace(/phone=\d+&/,"phone="+phone+"&helper="+phone+"&");
              $.ajax({
-                    url :"http://miracle.jarvys.me/api/gifts?phone="+phone,
-                    type :"GET",
+                    url :"http://miracle.jarvys.me/api/open",
+                    type :"POST",
+                    data :_data,
                     dataType :"json",
                     success:function(data, status, xhr){
                         var code=Number(data.code);
-                        lineLink+="?phone="+phone;
                         if(code==0){
                             var gifts=data.gifts;
-                            // 第一次抽奖
-                            if(!Number(data.opened)){
-                                $(".wrapper1").hide();
-                                $(".wrapper2").show();
-                                if(!data.mine){
-                                    // 感谢                                
-                                    $(".ungift_panel").show();
-                                    $(".gift_panel").hide();
-                                }else{
-                                    $(".only_gift").eq(0).addClass("bigGift"+map[data.mine].type);
-                                    $(".ungift_panel").hide();
-                                    $(".gift_panel").show();
-                                }
-                                if(localStorage){
-                                    localStorage.gift="has";
-                                    localStorage.phone=phone; 
-                                }
+                            $(".wrapper1").hide();
+                            $(".wrapper2").show();
+                            if(data.result){
+                                $(".only_gift").eq(0).addClass("bigGift"+map[data.result].type);
+                                $(".ungift_panel").hide();
+                                $(".gift_panel").show();
+
                             }else{
-                                // 已经抽过奖品了
-                                window.location.href="gift.html?phone="+phone;
+                                // 感谢                                
+                                $(".ungift_panel").show();
+                                $(".gift_panel").hide();
                             }
+                            if(localStorage){
+                                localStorage.gift="has";
+                                localStorage.phone=phone; 
+                            }
+                            
                         }else{
                              window.console&& window.console.log("code:"+code);
                             alert("与服务器链接异常，请重试！");  
