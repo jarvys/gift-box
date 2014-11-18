@@ -69,7 +69,9 @@ router.post('/info', function(req, res) {
 
 function taskError(err, code) {
     if (_.isString(err)) {
-        err = new Error(err);
+        var msg = err;
+        err = new Error(msg);
+        err.msg = msg;
     }
     err.code = code;
     return err;
@@ -124,11 +126,22 @@ function ensureTimes(user, helper, callback) {
     UserGift.times(user, helper, function(err, times) {
         if (err) return callback(taskError(err, CODE_DB_ERROR));
 
-        if (times >= 2) {
-            return callback(taskError('more than twice', CODE_TIMES_LIMIT));
+        if (times >= 1) {
+            return callback(taskError('more than once, ' + times, CODE_TIMES_LIMIT));
         }
 
-        return callback(null, user, helper);
+
+        UserGift.count({
+            user: user.id
+        }, function(err, count) {
+            if (err) return callback(taskError(err, CODE_DB_ERROR));
+
+            if (count >= 4) {
+                return callback(taskError('more than 4 times, ' + count, CODE_TIMES_LIMIT));
+            }
+
+            return callback(null, user, helper);
+        });
     });
 }
 
@@ -167,20 +180,23 @@ function rollGift(user, helper, gifts, proportion, callback) {
     var limit = total / proportion;
     var pos = Math.floor(Math.random() * limit);
     logger.debug('roll_gift -> pos: %d, total: %d', pos, total);
+    var giftGot;
     if (pos >= total) {
-        return callback(taskError('not lucky', CODE_NOT_LUCKY));
+        //return callback(taskError('not lucky', CODE_NOT_LUCKY));
+        giftGot = null;
+    } else {
+        var leftArr = _.map(gifts, function(gift) {
+            return gift.left;
+        });
+
+        var index = utils.find(leftArr, total);
+        giftGot = gifts[index];
     }
 
-    var leftArr = _.map(gifts, function(gift) {
-        return gift.left;
-    });
-
-    var index = utils.find(leftArr, total);
-    var gift = gifts[index];
     UserGift.create({
         user: user.id,
         helper: helper.id,
-        gift: gift.id,
+        gift: giftGot ? giftGot.id : null,
         date: new Date()
     }, function(err) {
         if (err) return callback(taskError(err, CODE_DB_ERROR));
@@ -188,7 +204,7 @@ function rollGift(user, helper, gifts, proportion, callback) {
         callback(null, {
             usr: user,
             helper: helper,
-            gift: gift
+            gift: giftGot
         });
     });
 }
@@ -226,18 +242,9 @@ router.post('/open', function(req, res) {
         }
 
         var giftGot = err ? null : result.gift.slug;
-        GiftLog.create({
-            user: phone,
-            helper: helper,
-            gift: giftGot,
-            date: new Date()
-        }, function(err) {
-            if (err) console.error(err);
-
-            return res.json({
-                code: 0,
-                result: giftGot
-            });
+        return res.json({
+            code: 0,
+            result: giftGot
         });
     });
 });
@@ -296,31 +303,47 @@ router.get('/gifts', function(req, res) {
         });
     }
 
-    GiftLog.find({
-        user: req.query.phone
-    }, function(err, logs) {
-        if (err) console.error(err);
+    User.findOne({
+        phone: req.query.phone
+    }, function(err, user) {
+        if (err || !user) {
+            if (err) logger.error(err);
 
-        logs = err ? [] : logs;
-        var giftsFromFriend = _.filter(logs, function(log) {
-            return log.phone !== req.query.phone;
-        });
-        giftsFromFriend = _.map(giftsFromFriend, function(log) {
-            return log.gift;
-        });
-
-        var logMine = null;
-        for (var i = 0; i < logs.length; i++) {
-            if (logs[i].phone === req.query.phone) {
-                logMine = logs[i];
-                break;
-            }
+            return res.json({
+                code: 1101,
+                msg: 'internal server error'
+            });
         }
 
-        res.json({
-            code: 0,
-            gifts: giftsFromFriend,
-            mine: logMine
+        logger.debug(user);
+        UserGift.find({
+            user: user.id
+        }).populate('gift').exec(function(err, records) {
+            if (err) logger.error(err);
+
+            records = err ? [] : records;
+            logger.debug(records);
+            var giftsFromFriend = _.filter(records, function(record) {
+                return !record.helper.equals(record.user);
+            });
+            giftsFromFriend = _.map(giftsFromFriend, function(record) {
+                return record.gift ? record.gift.slug : null;
+            });
+
+            var mineGifts = _.filter(records, function(record) {
+                return record.helper.equals(record.user);
+            });
+            var giftMine = mineGifts.length > 0 ? mineGifts[0] : null;
+            var opened = giftMine !== null;
+            giftMine = giftMine ? giftMine.gift : null;
+
+            res.json({
+                code: 0,
+                gifts: giftsFromFriend,
+                mine: giftMine ? giftMine.slug : null,
+                opened: opened ? 1 : 0
+            });
+
         });
     });
 });
