@@ -111,7 +111,6 @@
                     }else{
                         $(".js-num").text(gifts.length);
                     }
-
                     var _html="";
                     for(var i=0;i<4;i++){
                         _html+='<li>' 
@@ -121,10 +120,10 @@
                         if(i==0){
                            _html+=' <p>我拆的礼物</p>';
                         }else{
-                            if(gifts[i]){
-                                _html+=' <p class="js-share">邀请蜜友帮忙拆礼盒</p>';                            
+                            if(!gifts[i]){
+                                _html+='<p class="js-share">邀请蜜友帮忙拆礼盒</p>';                            
                             }else{
-                                 _html+=' <p>好友帮拆的礼物</p>';
+                                 _html+='<p>好友帮拆的礼物</p>';
                             }                      
                         }     
                         _html+='</li>';  
