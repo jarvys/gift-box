@@ -243,7 +243,7 @@
                         success:function(data, status, xhr){
                             var code=Number(data.code);
                             if(code==0){
-                                lineLink+="?phone"+phone;
+                                lineLink+="?phone="+phone;
                                 loadGift();
                             }else{
                                 window.console&& window.console.log("code:"+code);

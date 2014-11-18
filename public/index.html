@@ -237,7 +237,7 @@
                     dataType :"json",
                     success:function(data, status, xhr){
                         var code=Number(data.code);
-                        lineLink+="?phone"+phone;
+                        lineLink+="?phone="+phone;
                         if(code==0){
                             var gifts=data.gifts;
                             // 第一次抽奖

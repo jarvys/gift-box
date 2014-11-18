@@ -123,7 +123,7 @@
             pars[b] = c;
         });
         phone=pars.phone;
-        lineLink+="?phone"+phone;
+        lineLink+="?phone="+phone;
         $.ajax({
             url :"http://miracle.jarvys.me/api/gifts?phone="+phone,
             type :"GET",
