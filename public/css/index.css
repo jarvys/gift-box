@@ -96,6 +96,7 @@ ul,ol{
   visibility: visible;
   opacity: 0;
   background: url(../image/bg.png) 0 0 no-repeat; 
+  background-size: 100%;
 }
 
 /*-----------------header-----------------------*/
@@ -121,6 +122,7 @@ ul,ol{
 
 .wrapper0{
   background: url(../image/bg0.png) 0 0 no-repeat; 
+  background-size: 100%;
 }
 .wrapper_share{
   position: absolute;
@@ -296,33 +298,36 @@ ul,ol{
 
 .only_gift{
   width: 640px;
-  height: 460px;
+  height: 460px; 
+  background-size: 100%;
+  background-position: 0 0;
+  background-repeat: no-repeat;;
 }
 .bigGift0{
   height: 696px;
-  background: url(../image/bigGift0.png) 0 0 no-repeat;
+  background-image: url(../image/bigGift01.png);  
 }
 .bigGift1{
-  background: url(../image/bigGift1.png) 0 0 no-repeat;
+  background-image: url(../image/bigGift1.png);
 }
 .bigGift2{
-  background: url(../image/bigGift2.png) 0 0 no-repeat;
+  background-image: url(../image/bigGift2.png);
 }
 .bigGift3{
-  background: url(../image/bigGift3.png) 0 0 no-repeat;
+  background-image: url(../image/bigGift3.png);
 }
 .bigGift4{
-  background: url(../image/bigGift4.png) 0 0 no-repeat;
+  background-image: url(../image/bigGift4.png);
 }
 .bigGift5{
-  background: url(../image/bigGift5.png) 0 0 no-repeat;
+  background-image: url(../image/bigGift5.png);
 }
 .bigGift6{
-  background: url(../image/bigGift6.png) 0 0 no-repeat;
+  background-image: url(../image/bigGift6.png);
 }
 .bigGift7{
   height: 475px;
-  background: url(../image/bigGift7.png) 0 0 no-repeat;
+  background-image: url(../image/bigGift7.png);
 }
 .gift_panel{
   display: block;
@@ -385,17 +390,22 @@ ul,ol{
 .openGift_list .smaillGiftbg{
   width: 181px;
   height: 172px;
+  overflow: hidden;
   background: url(../image/giftbg.png) 0 0 no-repeat;  
 }
 .openGift_list .smaillGiftbg2{
    background: url(../image/giftbg2.png) 0 0 no-repeat;  
 }
 .smaillGift{
-   width: 181px;
-  height: 172px;
+  width: 150px;
+  height: 150px;
+  margin: 24px 0 0 10px;
 }
 .smaillGift0{ 
-  background: url(../image/smaillGift0.png) 0 0 no-repeat; 
+  background: url(../image/smaillGift0.png) 0 0 no-repeat;
+  width: 181px;
+  height: 172px; 
+  margin: 0;
 }
 .smaillGift1{ 
   background: url(../image/smaillGift1.png) 0 0 no-repeat; 
@@ -414,6 +424,9 @@ ul,ol{
 }
 .smaillGiftq{
   background: url(../image/smaillGiftq.png) 0 0 no-repeat; 
+  width: 181px;
+  height: 172px;
+  margin: 0;
 }
 .openGift_list p{
   color: #4ad7ff;
