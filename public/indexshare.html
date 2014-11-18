@@ -234,8 +234,7 @@
                     window.location.href="gift.html?phone="+phone;
                 }else{
                     var _data=$("#js-form").serialize();
-                    var _tel=$(".js-tel").val();
-                    _data.replace(/phone=\d+&helper=\d+&/,"phone="+_tel+"&");
+                    _data.replace(/phone=\d+&helper=\d+&/,"phone="+phone+"&");
                     $.ajax({
                         url :"http://miracle.jarvys.me/api/info",
                         type :"POST",
@@ -244,6 +243,7 @@
                         success:function(data, status, xhr){
                             var code=Number(data.code);
                             if(code==0){
+                                lineLink+="?phone"+phone;
                                 loadGift();
                             }else{
                                 window.console&& window.console.log("code:"+code);
@@ -259,6 +259,7 @@
             }
         });
         function loadGift(){
+            var _data=$("#js-form").serialize();
             $.ajax({
                     url :"http://miracle.jarvys.me/api/open",
                     type :"POST",
@@ -267,7 +268,6 @@
                     success:function(data, status, xhr){
                         var code=Number(data.code);
                         if(code==0){
-                            lineLink+="?phone"+phone;
                             $(".wrapper1").hide();
                             $(".wrapper2").show();
                             if(data.gift){
