@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>蜜丝佛陀入驻中国六周年,感恩回馈,思念有礼!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0,minimal-ui">
+    <link rel="stylesheet" href="css/index.css"/>
+</head>
+<body>
+    <div class="page_viewport">
+        <div class="page_wrapper">
+            <div class="header"></div>
+            <div class="content_wrapper wrapper3">
+                <div class="title title_gift">
+                    <h1 class="js-title">
+                        已有
+                        <span class="js-num">2</span>
+                        位好友帮您拆礼
+                    </h1>
+                </div>
+                <div class="hr"></div>
+                <ul class="openGift_list">                
+                </ul>
+                <div class="btn_box">
+                    <img src="image/arrows.png"  class="arrows" />
+                    <a href="#" class="btn js-share">邀请蜜友帮忙拆礼盒</a>
+                </div>
+            </div>
+            <div class="content_wrapper wrapper_share hide">
+                <div class="share"></div>
+            </div>
+        </div>
+    </div>
+</body>
+    <script type="text/javascript" src="js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="js/Jser.scene.js"></script>
+    <script type="text/javascript">
+        var search=location.search;
+        var pars={}
+        //参数获取转换   将参数字符串'?a=123&b:456'转换为json对象{a:123, b:456}
+        search.replace(/(\w+)\s*=\s*([\w-]+)/g, function(a, b, c) {
+            pars[b] = c;
+        });
+        var _data="tel="+pars.tel;
+        $.ajax({
+            url :"data/getGift.data.js",
+            data :_data,
+            dataType :"json",
+            success:function(data, status, xhr){
+                var gData=data.data;
+                if(gData.num==gData.limitNum){                    
+                    $(".js-title").text("恭喜您的礼盒已领齐");
+                    $(".js-share").text("邀请蜜友来领礼盒！")
+                }else{
+                    $(".js-num").text(gData.num);
+                }
+                var _html="";
+                $.each(gData.gift,function(i,t){                    
+                    _html+='<li>' 
+                        +'<div class="smaillGiftbg">'
+                        +'<div class="smaillGift smaillGift'+t+'"></div>'
+                        +'</div>';
+                    if(i==0){
+                       _html+=' <p>我拆的礼物</p>';
+                    }else{
+                        if(t=="q"){
+                            _html+=' <p class="js-share">邀请蜜友帮忙拆礼盒</p>';                            
+                        }else{
+                             _html+=' <p>好友帮拆的礼物</p>';
+                        }                      
+                    }     
+                    _html+='</li>';
+                })
+                $(".openGift_list").html(_html);
+                $(".js-share").click(function(){
+                    $(".wrapper_share").show();
+                    $(document).bind("mousedown.share", hideShare);            
+                });
+                
+            },
+            error:function(xhr, errorType, error){
+
+            }
+        });
+    
+    function hideShare(){
+        $(".wrapper_share").hide();
+        $(document).unbind("mousedown.share");
+    }
+
+    </script>
+</html>

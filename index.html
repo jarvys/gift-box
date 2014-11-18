@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>蜜丝佛陀入驻中国六周年,感恩回馈,思念有礼!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0,minimal-ui">
+    <link rel="stylesheet" href="css/index.css"/>
+</head>
+<body>
+    <div class="page_viewport">
+        <div class="page_wrapper">
+            <div class="header"></div>
+            <div class="content_wrapper wrapper0">
+                <div class="btn_box">
+                    <img src="image/arrows.png"  class="arrows" />
+                    <a href="javascript:;" class="btn" id="js-openGift">点击拆开礼盒</a>
+                </div>
+            </div>
+            <div class="content_wrapper wrapper1 hide">
+                <div class="title" style="margin:263px 0 18px 0">
+                    <h1>让我们认识你</h1>
+                </div>
+                <div class="hr"></div>
+                <form id="js-form" name="f" onsubmit="return false;" >
+                    <div class="info_form">
+                        <div class="info_txt">
+                            <input type="tel" class="js-tel" placeholder="请输入您的手机号码" name="tel" maxlength="11" autocomplete="off" />
+                        </div>
+                        <div class="msg-error"></div>
+                        <div class="info_sel">
+                            <div class="sel left" id="_prvs" style="margin-right: 5px;">
+                                <label id="_prvs_lab"></label>
+                            </div>
+                            <div class="sel right" id="_city">
+                                <label id="_city_lab"></label>
+                            </div>
+                            <input type="hidden" id="_prvs_val" name="pv"/>
+                            <input type="hidden" id="_city_val" name="cv" />
+                        </div>
+                    </div>
+                </form>
+                <div class="btn_box">
+                    <img src="image/arrows.png"  class="arrows" />
+                    <a href="javascript:;" class="btn" id="js-submit">点击完成</a>
+                </div>
+            </div>
+            <div class="content_wrapper wrapper2 hide">
+                <div class="gift_panel hide">
+                    <div class="title" style="margin-top:128px">
+                        <h1>恭喜您获得</h1>
+                    </div>
+                    <div class="only_gift bigGift1"></div>
+                </div>
+                <div class="ungift_panel hide">
+                    <div class="only_gift bigGift0"></div>
+                </div>
+                <div class="ungift"></div>
+                <p class="ungift_label">您还有未拆礼盒，Miss谁就让谁拆吧！</p>
+                <div class="btn_box">
+                    <img src="image/arrows.png"  class="arrows" />
+                    <a href="javascript:;" class="btn js-share">邀请蜜友帮忙拆礼盒</a>
+                </div>
+            </div>
+            <div class="content_wrapper wrapper_share hide">
+                <div class="share"></div>
+            </div>
+        </div>
+    </div>
+    <div id="Jser_temp">
+        <!--
+        {common_ddl}
+        <ul class="dropdown-menu">
+        {for(var i=0,j=datalist.length,dl;i
+        <j,dl=datalist[i];i++)}
+          <li>
+            <a href="javascript:;" target="_self" value="{dl.value}" title="{dl.text}">{dl.text}</a>
+        </li>
+        {/for}
+    </ul>
+    {/common_ddl}
+    -->
+</div>
+</body>
+<script type="text/javascript" src="js/lib/zepto.min.js"></script>
+<script type="text/javascript" src="js/Jser.js"></script>
+<script type="text/javascript" src="js/Jser.scene.js"></script>
+<script type="text/javascript" src="js/Jser.CityListData.js"></script>
+<script type="text/javascript" src="js/Jser.CityList.js"></script>
+<script type="text/javascript">
+    $(function(){       
+        $.extend(Jser, {
+            ddList: function(id, data, selFn, h) {
+                var t = this, ddl = new Jser.DropDownList(id, h);
+                ddl.itemHeight=42;
+                ddl.onselected = function(o, e) {
+                    $.isFunction(selFn) && selFn(o, e);
+                };
+                ddl.changeData(data);
+                return ddl;
+            },
+            todoList:function(){
+                 var t=this;                              
+                var citylist = new Jser.CityList({
+                    p: "_prvs",         //省份容器id（若不需要省份数据，请留空或不配置）
+                    c: "_city",         //城市容器id（若不需要城市数据，请留空或不配置）
+                    pText: "选择省份", //省份默认提示（仅配置p且nodefault为true时）
+                    cText: "选择城市", //城市默认提示（仅配置c且nodefault为true时）
+                    nodefault: true,    //是否显示默认值（默认为false，若为false则自动选中值INPUT里的值）
+                    data: CityData      //数据
+                });          
+            }  
+        });  
+        Jser.todoList();
+        // 开启
+        $("#js-openGift").click(function(){
+            $(".wrapper0").hide();
+            $(".wrapper1").show();
+            Jser.todoList();
+        });  
+        // 提交表单
+        $("#js-submit").click(function(){
+            if(checkInput()){
+                var _data=$("#js-form").serialize();
+                if(false){
+                   $.ajax({
+                        url :"data/gift.data.js",
+                        data :_data,
+                        dataType :"json",
+                        success:function(data, status, xhr){
+                           
+                        },
+                        error:function(xhr, errorType, error){
+
+                        }
+                    });
+               }else{
+                  $.ajax({
+                        url :"data/gift.data.js",
+                        data :_data,
+                        dataType :"json",
+                        success:function(data, status, xhr){
+                            var type=Number(data.data.type);
+                            if(isNaN(type)){
+                                alert("提交失败，请重试！");
+                            }
+                            if(type==-1){
+                                // 跳转
+                                window.location.href="gift.html?u=user";
+                                return false;                                
+                            }
+                            $(".wrapper1").hide();
+                            $(".wrapper2").show();
+                            if(type==0){
+                                 // 感谢                                
+                                $(".ungift_panel").show();
+                                $(".gift_panel").hide();
+                            }else{
+                                $(".only_gift").eq(0).addClass("bigGift"+type);
+                                 $(".ungift_panel").hide();
+                                $(".gift_panel").show();
+                            }
+                            
+                        },
+                        error:function(xhr, errorType, error){
+
+                        }
+                    });
+               }
+                
+            }
+        });
+        function checkInput(){
+            var result=false;
+            var val1=$.trim($(".js-tel").val());
+            var val2=$.trim($("#_prvs_val").val());
+            var val3=$.trim($("#_city_val").val());
+            var reg=/^(\d{1,4}\-)?(13|15|17|18){1}\d{9}$/;
+            if(!reg.test(val1)){
+                $(".msg-error").html("*为确保中奖联络,请输入正确的电话号码");
+                return result;
+            }
+            if(!val2){
+                $(".msg-error").html("*为确保中奖地址,请输入选择省份");
+                return result;
+            }
+            if(!val3){
+                $(".msg-error").html("*为确保中奖地址,请输入选择城市");
+                return result;
+            }
+            result=true;
+            $(".msg-error").html();
+            return result;
+        };
+        $(".js-share").click(function(){
+            $(".wrapper_share").show().bind("mousedown.share", hideShare);
+            
+        });
+        function hideShare(){
+            $(".wrapper_share").hide().unbind("mousedown.share");
+        };
+    });    
+    </script>
+</html>
