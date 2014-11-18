@@ -33,8 +33,32 @@ var UserSchema = Schema({
     city: Number
 });
 
-// TODO
-var TARGET_CITIES = [];
+
+function isTargetCity(cityid) {
+    var prefix = Math.floor(cityid / 100);
+    if ([31, 11, 12].indexOf(prefix) !== -1) {
+        return true;
+    }
+
+    if ([3201, 5101, 4401, 2101, 3301, 5000, 4403, 2102, 5301].indexOf(cityid) !== -1) {
+        return true;
+    }
+
+    return false;
+}
+
+function isPreferCity(cityid) {
+    var prefix = Math.floor(cityid / 100);
+    if ([31, 11].indexOf(prefix) !== -1) {
+        return true;
+    }
+
+    if ([3201, 5101, 4401, 2101].indexOf(cityid) !== -1) {
+        return true;
+    }
+
+    return false;
+}
 
 UserSchema.methods.availableGifts = function(callback) {
     var self = this;
@@ -45,8 +69,9 @@ UserSchema.methods.availableGifts = function(callback) {
             return gift.left > 0;
         });
 
+        console.log(self.city);
         console.log(gifts);
-        if (TARGET_CITIES.indexOf(self.city) === -1) {
+        if (!isTargetCity(self.city)) {
             gifts = _.filter(gifts, function(gift) {
                 return gift.slug !== 'yingrun';
             });
@@ -158,5 +183,6 @@ module.exports = {
     Gift: Gift,
     UserGift: UserGift,
     GiftLog: GiftLog,
-    App: App
+    App: App,
+    isPreferCity: isPreferCity
 };

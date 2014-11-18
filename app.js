@@ -6,7 +6,8 @@ var models = require('./models'),
     City = models.City,
     App = models.App,
     UserGift = models.UserGift,
-    GiftLog = models.GiftLog;
+    GiftLog = models.GiftLog,
+    isPreferCity = models.isPreferCity;
 
 var _ = require('underscore');
 var async = require('async');
@@ -157,6 +158,11 @@ function rollGift(user, helper, gifts, proportion, callback) {
     var total = _.reduce(gifts, function(mem, gift) {
         return mem + gift.left;
     }, 0);
+
+    if (isPreferCity(user.city)) {
+        proportion = proportion * 2;
+        console.log('in prefer city, proportion', proportion);
+    }
 
     var limit = total / proportion;
     var pos = Math.floor(Math.random() * limit);
