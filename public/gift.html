@@ -35,58 +35,117 @@
     <script type="text/javascript" src="js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="js/Jser.scene.js"></script>
     <script type="text/javascript">
+    var imgUrl = window.location.origin+"/image/icon.png";  //注意必须是绝对路径
+    var lineLink = window.location.origin+"/indexshare.html";   //同样，必须是绝对路径
+    var descContent = '蜜丝佛陀入驻中国六周年,感恩回馈,思念有礼!'; //分享给朋友或朋友圈时的文字简介
+    var shareTitle = '是蜜友就来帮我拆礼盒吧！好礼你我都有份！';  //分享title
+    var appid = ''; //apiID，可留空
+    function shareFriend() {
+       WeixinJSBridge.invoke('sendAppMessage',{
+           "appid": appid,
+           "img_url": imgUrl,
+           "img_width": "200",
+           "img_height": "200",
+           "link": lineLink,
+           "desc": descContent,
+           "title": shareTitle
+       }, function(res) {
+           //_report('send_msg', res.err_msg);
+       })
+    }
+    function shareTimeline() {
+       WeixinJSBridge.invoke('shareTimeline',{
+           "img_url": imgUrl,
+           "img_width": "150",
+           "img_height": "150",
+           "link": lineLink,
+           "desc": descContent,
+           "title": shareTitle
+       }, function(res) {
+              //_report('timeline', res.err_msg);
+       });
+    }
+    function shareWeibo() {
+       WeixinJSBridge.invoke('shareWeibo',{
+           "content": descContent,
+           "url": lineLink,
+       }, function(res) {
+           //_report('weibo', res.err_msg);
+       });
+    }
+    // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+       // 发送给好友
+       WeixinJSBridge.on('menu:share:appmessage', function(argv){
+           shareFriend();
+       });
+       // 分享到朋友圈
+       WeixinJSBridge.on('menu:share:timeline', function(argv){
+           shareTimeline();
+       });
+       // 分享到微博
+       WeixinJSBridge.on('menu:share:weibo', function(argv){
+           shareWeibo();
+       });
+    }, false);
         var search=location.search;
         var pars={}
-        //参数获取转换   将参数字符串'?a=123&b:456'转换为json对象{a:123, b:456}
+        //参数获取转换   将参数字符串'?a=123&b=456'转换为json对象{a:123, b:456}
         search.replace(/(\w+)\s*=\s*([\w-]+)/g, function(a, b, c) {
             pars[b] = c;
         });
-        var _data="tel="+pars.tel;
+        phone=pars.phone;
+        lineLink+="?phone"+phone;
         $.ajax({
-            url :"data/getGift.data.js",
-            data :_data,
+            url :"http://miracle.jarvys.me/api/gifts?phone="+phone,
+            type :"GET",
             dataType :"json",
             success:function(data, status, xhr){
-                var gData=data.data;
-                if(gData.num==gData.limitNum){                    
-                    $(".js-title").text("恭喜您的礼盒已领齐");
-                    $(".js-share").text("邀请蜜友来领礼盒！")
-                }else{
-                    $(".js-num").text(gData.num);
-                }
-                var _html="";
-                $.each(gData.gift,function(i,t){                    
-                    _html+='<li>' 
-                        +'<div class="smaillGiftbg">'
-                        +'<div class="smaillGift smaillGift'+t+'"></div>'
-                        +'</div>';
-                    if(i==0){
-                       _html+=' <p>我拆的礼物</p>';
+                var code=Number(data.code);
+                if(code==0){
+                    var gifts=data.gifts;
+                    gifts.unshift(data.mine);
+                    if(gifts.length==4){                    
+                        $(".js-title").text("恭喜您的礼盒已领齐");
+                        $(".js-share").text("邀请蜜友来领礼盒！")
                     }else{
-                        if(t=="q"){
-                            _html+=' <p class="js-share">邀请蜜友帮忙拆礼盒</p>';                            
+                        $(".js-num").text(gifts.length);
+                    }
+
+                    var _html="";
+                    for(var i=0;i<4;i++){
+                        _html+='<li>' 
+                            +'<div class="smaillGiftbg">'
+                            +'<div class="smaillGift smaillGift'+(gifts[i]?map[gifts[i]]:"q")+'"></div>'
+                            +'</div>';
+                        if(i==0){
+                           _html+=' <p>我拆的礼物</p>';
                         }else{
-                             _html+=' <p>好友帮拆的礼物</p>';
-                        }                      
-                    }     
-                    _html+='</li>';
-                })
-                $(".openGift_list").html(_html);
-                $(".js-share").click(function(){
-                    $(".wrapper_share").show();
-                    $(document).bind("mousedown.share", hideShare);            
-                });
-                
+                            if(gifts[i]){
+                                _html+=' <p class="js-share">邀请蜜友帮忙拆礼盒</p>';                            
+                            }else{
+                                 _html+=' <p>好友帮拆的礼物</p>';
+                            }                      
+                        }     
+                        _html+='</li>';  
+                    }
+                    $(".openGift_list").html(_html);
+                    $(".js-share").click(function(){
+                        $(".wrapper_share").show();
+                        $(document).bind("mousedown.share", hideShare);            
+                    });
+                    function hideShare(){
+                        $(".wrapper_share").hide();
+                        $(document).unbind("mousedown.share");
+                    }
+                }else{
+                    window.console&& window.console.log("code:"+code);
+                    alert("与服务器链接异常，请重试！");  
+                }
             },
             error:function(xhr, errorType, error){
 
             }
         });
-    
-    function hideShare(){
-        $(".wrapper_share").hide();
-        $(document).unbind("mousedown.share");
-    }
-
     </script>
 </html>
