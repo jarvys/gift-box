@@ -238,10 +238,10 @@ router.post('/open', function(req, res) {
                 phone, helper, err);
         } else {
             logger.info('open_result -> user: %s, helper: %s, gift: %s',
-                phone, helper, result.gift.slug);
+                phone, helper, result.gift ? result.gift.slug : null);
         }
 
-        var giftGot = err ? null : result.gift.slug;
+        var giftGot = err ? null : (result.gift ? result.gift.slug : null);
         return res.json({
             code: 0,
             result: giftGot
@@ -293,6 +293,25 @@ router.get('/regions', function(req, res) {
             });
         });
     });
+});
+
+router.get('/records', function(req, res) {
+    UserGift.find({})
+        .poplulate('user')
+        .populate('helper')
+        .exec(function(err, records) {
+            if (err) {
+                return res.json({
+                    code: 1101,
+                    msg: 'internal server error'
+                });
+            }
+
+            res.json({
+                code: 0,
+                records: records
+            });
+        });
 });
 
 router.get('/gifts', function(req, res) {
@@ -355,4 +374,3 @@ var PORT = 9678;
 app.listen(PORT, function() {
     console.log('listening on port', PORT);
 });
-
