@@ -232,8 +232,34 @@
                 if(phone==pars.phone){
                     // 已经抽过奖品了
                     window.location.href="gift.html?phone="+phone;
+                }else{
+                    var _data=$("#js-form").serialize();
+                    var _tel=$(".js-tel").val();
+                    _data.replace(/phone=\d+&helper=\d+&/,"phone="+_tel+"&");
+                    $.ajax({
+                        url :"http://miracle.jarvys.me/api/info",
+                        type :"POST",
+                        data :_data,
+                        dataType :"json",
+                        success:function(data, status, xhr){
+                            var code=Number(data.code);
+                            if(code==0){
+                                loadGift();
+                            }else{
+                                window.console&& window.console.log("code:"+code);
+                                alert("与服务器链接异常，请重试！");
+                            }
+                        },
+                        error:function(xhr, errorType, error){
+
+                        }
+                    });
                 }       
-                $.ajax({
+                
+            }
+        });
+        function loadGift(){
+            $.ajax({
                     url :"http://miracle.jarvys.me/api/open",
                     type :"POST",
                     data :_data,
@@ -262,8 +288,7 @@
 
                     }
                 });
-            }
-        });
+        };
         function checkInput(){
             var result=false;
             var val1=$.trim($(".js-tel").val());
