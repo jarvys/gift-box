@@ -1,6 +1,6 @@
 {
 	"data": {
-		"type": "5"
+		"type": "4"
 	},
 	"state": "success",
 	"info": "1"
