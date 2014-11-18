@@ -28,7 +28,7 @@ Gift.findOneAndUpdate({
     }
 
     if (!gift) {
-        return warnExit('no gift found');
+        return warnExit(new Error('no gift found'));
     }
 
     console.log('Done!', gift);
