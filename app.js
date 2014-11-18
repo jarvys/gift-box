@@ -302,13 +302,25 @@ router.get('/gifts', function(req, res) {
         if (err) console.error(err);
 
         logs = err ? [] : logs;
-        var gifts = _.map(logs, function(log) {
+        var giftsFromFriend = _.filter(logs, function(log) {
+            return log.phone !== req.query.phone;
+        });
+        giftsFromFriend = _.map(giftsFromFriend, function(log) {
             return log.gift;
         });
 
+        var logMine = null;
+        for (var i = 0; i < logs.length; i++) {
+            if (logs[i].phone === req.query.phone) {
+                logMine = logs[i];
+                break;
+            }
+        }
+
         res.json({
             code: 0,
-            gifts: gifts
+            gifts: giftsFromFriend,
+            mine: logMine
         });
     });
 });
