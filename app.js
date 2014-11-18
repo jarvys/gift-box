@@ -297,8 +297,9 @@ router.get('/regions', function(req, res) {
 
 router.get('/records', function(req, res) {
     UserGift.find({})
-        .poplulate('user')
+        .populate('user')
         .populate('helper')
+        .populate('gift')
         .exec(function(err, records) {
             if (err) {
                 return res.json({
@@ -309,7 +310,13 @@ router.get('/records', function(req, res) {
 
             res.json({
                 code: 0,
-                records: records
+                records: _.map(records, function(record) {
+                    return {
+                        phone: record.user.phone,
+                        helperPhone: record.helper.phone,
+                        gift: record.gift ? record.gift.slug : null
+                    }
+                })
             });
         });
 });
