@@ -22,7 +22,7 @@
                 </div>
                 <div class="hr"></div>
                 <form id="js-form" name="f"  onsubmit="return false;" >
-                    <input type="hidden" name="phone" id="js-helper" />
+                    <input type="hidden" name="phone" id="js-phone" />
                     <div class="info_form">
                         <div class="info_txt">
                             <input type="tel" class="js-tel" placeholder="请输入您的手机号码" name="helper" maxlength="15" autocomplete="off" />
@@ -176,7 +176,7 @@
                  'type':'5'
             }
             
-        }
+        };
 
 
     $(function(){
@@ -186,7 +186,7 @@
         search.replace(/(\w+)\s*=\s*([\w-]+)/g, function(a, b, c) {
             pars[b] = c;
         });
-        $("#js-helper").val(pars.phone);
+        $("#js-phone").val(pars.phone);
         $.extend(Jser, {
             ddList: function(id, data, selFn, h) {
                 var t = this, ddl = new Jser.DropDownList(id, h);
@@ -245,7 +245,7 @@
                             $(".wrapper1").hide();
                             $(".wrapper2").show();
                             if(data.gift){
-                                $(".only_gift").eq(0).addClass("bigGift"+map[gifts[0]]);
+                                $(".only_gift").eq(0).addClass("bigGift"+map[gifts[0]].type);
                                 $(".ungift_panel").hide();
                                 $(".gift_panel").show();
                             }else{
