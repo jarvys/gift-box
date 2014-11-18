@@ -3,6 +3,7 @@ mongoose.connect('mongodb://localhost/gift');
 
 var async = require('async');
 var models = require('../models');
+var citylist = require('../citylist');
 var Region = models.Region,
     City = models.City;
 
@@ -21,9 +22,9 @@ Region.remove({}, function(err) {
             return warnExit(err);
         }
 
-        async.eachSeries(provinces, function(province, cb) {
+        async.eachSeries(citylist.plist, function(province, cb) {
             var region = new Region({
-                no: province.ProID,
+                no: province.id,
                 name: province.name
             });
             region.save(cb);
@@ -32,14 +33,17 @@ Region.remove({}, function(err) {
                 return warnExit(err);
             }
 
-            async.eachSeries(cities, function(city, cb) {
-                var c = new City({
-                    no: city.CityID,
-                    name: city.name,
-                    region: city.ProID
-                });
+            async.eachSeries(Object.keys(citylist.clist), function(regionID, cb) {
+                var cities = citylist.clist[regionID];
+                async.eachSeries(cities, function(city, cb) {
+                    var c = new City({
+                        no: city.id,
+                        name: city.name,
+                        region: regionID 
+                    });
 
-                c.save(cb);
+                    c.save(cb);
+                }, cb);
             }, function(err) {
                 if (err) {
                     return warnExit(err);
@@ -52,6 +56,7 @@ Region.remove({}, function(err) {
     });
 });
 
+/*
 var provinces = [{
     "ProID": 1,
     "name": "北京市",
@@ -2075,3 +2080,5 @@ var cities = [{
     "ProID": 34,
     "CitySort": 371
 }];
+*;
+*/

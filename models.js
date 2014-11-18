@@ -45,12 +45,14 @@ UserSchema.methods.availableGifts = function(callback) {
             return gift.left > 0;
         });
 
-        if (TARGET_CITIES.indexOf(self.city) !== -1) {
+        console.log(gifts);
+        if (TARGET_CITIES.indexOf(self.city) === -1) {
             gifts = _.filter(gifts, function(gift) {
-                gift.slug !== 'yingrun'
+                return gift.slug !== 'yingrun';
             });
         }
 
+        console.log(gifts);
         callback(null, gifts);
     });
 };
@@ -126,20 +128,10 @@ UserGiftSchema.statics.times = function(user, helper, callback) {
 var UserGift = mongoose.model('UserGift', UserGiftSchema);
 
 var GiftLogSchema = Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    },
-
-    helper: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    },
-
-    gift: {
-        type: Schema.Types.ObjectId,
-        ref: 'Gift'
-    }
+    user: String,
+    helper: String,
+    gift: String,
+    date: Date
 });
 
 var GiftLog = mongoose.model('GiftLog', GiftLogSchema);

@@ -5,7 +5,8 @@ var models = require('./models'),
     Region = models.Region,
     City = models.City,
     App = models.App,
-    UserGift = models.UserGift;
+    UserGift = models.UserGift,
+    GiftLog = models.GiftLog;
 
 var _ = require('underscore');
 var async = require('async');
@@ -135,6 +136,7 @@ function getAvailableGifts(user, helper, callback) {
     user.availableGifts(function(err, gifts) {
         if (err) return callback(taskError(err, CODE_DB_ERROR));
 
+        logger.debug('available gifts,', gifts);
         if (gifts.length === 0) {
             return callback(taskError('no gifts left', CODE_NO_GIFTS_LEFT));
         }
@@ -205,13 +207,6 @@ router.post('/open', function(req, res) {
         });
     }
 
-    if (phone === helper) {
-        return res.json({
-            code: 1102,
-            msg: 'Invalid user'
-        });
-    }
-
     queue.push({
         phone: phone,
         helper: helper
@@ -219,17 +214,24 @@ router.post('/open', function(req, res) {
         if (err) {
             logger.error('open_result -> user: %s, helper: %s, result: %j',
                 phone, helper, err);
-            return res.json({
-                code: 0,
-                result: null
-            });
+        } else {
+            logger.info('open_result -> user: %s, helper: %s, gift: %s',
+                phone, helper, result.gift.slug);
         }
 
-        logger.info('open_result -> user: %s, helper: %s, gift: %s',
-            phone, helper, result.gift.slug);
-        return res.json({
-            code: 0,
-            result: result.gift.slug
+        var giftGot = err ? null : result.gift.slug;
+        GiftLog.create({
+            user: phone,
+            helper: helper,
+            gift: giftGot,
+            date: new Date()
+        }, function(err) {
+            if (err) console.error(err);
+
+            return res.json({
+                code: 0,
+                result: giftGot
+            });
         });
     });
 });
@@ -280,47 +282,33 @@ router.get('/regions', function(req, res) {
     });
 });
 
-app.get('/gifts', function(req, res) {
+router.get('/gifts', function(req, res) {
     if (!req.query.phone) {
-        res.json({
+        return res.json({
             code: 0,
             gifts: []
         });
     }
 
-    User.findOne({
-        phone: req.query.phone
-    }, function(err, user) {
-        if (err || !user) {
-            res.json({
-                code: 0,
-                gifts: []
-            });
-        }
+    GiftLog.find({
+        user: req.query.phone
+    }, function(err, logs) {
+        if (err) console.error(err);
 
-        UserGift.find({
-            user: user.id
-        }).populate('gift').exec(function(err, records) {
-            if (err) {
-                res.json({
-                    code: 0,
-                    gifts: []
-                });
-            }
+        logs = err ? [] : logs;
+        var gifts = _.map(logs, function(log) {
+            return log.gift;
+        });
 
-            var gifts = _.map(records, function(record) {
-                return record.gift;
-            });
-
-            res.json({
-                code: 0,
-                gifts: gifts
-            });
+        res.json({
+            code: 0,
+            gifts: gifts
         });
     });
 });
 
 app.use('/api', router);
+app.use(express.static(__dirname + '/public'));
 
 var PORT = 9678;
 app.listen(PORT, function() {
