@@ -14,7 +14,7 @@
                 <div class="title title_gift">
                     <h1 class="js-title">
                         已有
-                        <span class="js-num">2</span>
+                        <span class="js-num">0</span>
                         位好友帮您拆礼
                     </h1>
                 </div>
@@ -88,6 +88,34 @@
            shareWeibo();
        });
     }, false);
+         var map={
+            "zhexiabi303":{ 
+                'name': '遮瑕笔303',
+                'slug': 'zhexiabi303',
+                'type':'1'
+            },
+            "fenbiye040":{ 
+                'name': '水嫩凝肌粉笔液040小样',
+                'slug': 'fenbiye040',
+                'type':'2'
+            },
+            "yingrun": { 
+                'name': '双效盈润粉液小样',
+                'slug': 'yingrun',
+                 'type':'3'
+            },
+            "yanying":{
+                'name': '单色眼影',
+                'slug':'yanying',
+                 'type':'4'
+            },
+             "perfume":{
+                'name': '香水',
+                'slug': 'perfume',
+                 'type':'5'
+            }
+            
+        };
         var search=location.search;
         var pars={}
         //参数获取转换   将参数字符串'?a=123&b=456'转换为json对象{a:123, b:456}
@@ -109,7 +137,7 @@
                         $(".js-title").text("恭喜您的礼盒已领齐");
                         $(".js-share").text("邀请蜜友来领礼盒！")
                     }else{
-                        $(".js-num").text(gifts.length);
+                        $(".js-num").text(gifts.length-1);
                     }
                     var _html="";
                     for(var i=0;i<4;i++){
