@@ -399,7 +399,7 @@ ul,ol{
 .smaillGift{
   width: 150px;
   height: 150px;
-  margin: 24px 0 0 10px;
+  margin: 24px auto 0;
 }
 .smaillGift0{ 
   background: url(../image/smaillGift0.png) 0 0 no-repeat;
