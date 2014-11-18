@@ -148,7 +148,7 @@
                         if(i==0){
                            _html+=' <p>我拆的礼物</p>';
                         }else{
-                            if(!gifts[i]){
+                            if(typeof gifts[i] ==="undefined"){
                                 _html+='<p class="js-share">邀请蜜友帮忙拆礼盒</p>';                            
                             }else{
                                  _html+='<p>好友帮拆的礼物</p>';
