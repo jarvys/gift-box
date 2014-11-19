@@ -35,8 +35,9 @@
     <script type="text/javascript" src="js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="js/Jser.scene.js"></script>
     <script type="text/javascript">
-    var imgUrl = window.location.origin+"/image/icon.png";  //注意必须是绝对路径
-    var lineLink = window.location.origin+"/indexshare.html";   //同样，必须是绝对路径
+    var origin = window.location.origin;
+    var imgUrl = origin+"/image/icon.png";  //注意必须是绝对路径
+    var lineLink = origin+"/indexshare.html";   //同样，必须是绝对路径
     var descContent = '蜜丝佛陀入驻中国六周年,感恩回馈,思念有礼!'; //分享给朋友或朋友圈时的文字简介
     var shareTitle = '是蜜友就来帮我拆礼盒吧！好礼你我都有份！';  //分享title
     var appid = ''; //apiID，可留空
@@ -125,7 +126,7 @@
         phone=pars.phone;
         lineLink+="?phone="+phone;
         $.ajax({
-            url :"http://miracle.jarvys.me/api/gifts?phone="+phone,
+            url :origin+"/api/gifts?phone="+phone,
             type :"GET",
             dataType :"json",
             success:function(data, status, xhr){
