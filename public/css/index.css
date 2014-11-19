@@ -167,6 +167,7 @@ ul,ol{
   position: absolute;
   left: 50%;
   top:0;
+  z-index: 5;
   margin-left:-188px;
   width: 376px;
   height: 63px;
@@ -175,6 +176,16 @@ ul,ol{
   font-size: 1.875em;
   text-align: center;
   background: #FFFF00;
+  border-radius: 6px;
+}
+.breathingLight{
+  position: absolute;
+  left: 50%;
+  top:0;
+  z-index: 1;
+  margin-left:-188px;
+  width: 376px;
+  height: 63px;
   border-radius: 6px;
   -moz-box-shadow: 0 0 5px #FFFF00;
   -webkit-box-shadow: 0 0 5px #FFFF00;
@@ -432,6 +443,7 @@ ul,ol{
   color: #4ad7ff;
   text-align: center;
   margin-top:23px;
+  font-size: 1.2em;
 }
 
 /*-----------------content_wrapper-----------------------*/
