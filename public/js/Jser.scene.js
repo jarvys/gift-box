@@ -60,7 +60,9 @@
        $(".page_wrapper").css({
          'transform': 'scale(' + scale + ',' + scale + ')',
          '-webkit-transform': 'scale(' + scale + ',' + scale + ')',
+         '-ms-transform': 'scale(' + scale + ',' + scale + ')',
          'transform-origin': '0 0',
+         '-ms-origin': '0 0',
          '-webkit-transform-origin': '0 0'
        });
      }
