@@ -495,6 +495,7 @@ Jser.DropDownList = Jser.createClass({}, function() {
      
      */
     show: function(e) {
+      $(".js-tel").blur();
       $.stopEvent(e);
       var t = this,
         id = t.cid + '_ddlcnt',
@@ -539,7 +540,7 @@ Jser.DropDownList = Jser.createClass({}, function() {
      
      */
     selected: function(e) {
-      //test
+      //test    
       var em = e.target,
         t = this;
       if (em && em.tagName.contains(/^a$/i)) {
